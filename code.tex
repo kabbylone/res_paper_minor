@@ -1,0 +1,248 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{gensymb}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Anemia Detection using Conjunctiva Segmentation\\
+{\footnotesize \textsuperscript{*}A machine learning approach integrating UNet for segmentation and logistic regression for classification}
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Author Name}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{University Name}\\
+City, Country \\
+email@address.com}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Author Name}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{University Name}\\
+City, Country \\
+email@address.com}
+}
+
+\maketitle
+
+\begin{abstract}
+The integration of technology into healthcare is revolutionizing diagnostic practices, particularly through the adoption of non-invasive procedures. Anemia, a widespread condition affecting individuals globally—especially women of childbearing age and children—demands advanced technological solutions for early detection and management. This study presents a U-Net-based Conjunctiva Segmentation Model (UNBCSM) designed to segment the conjunctiva region from digital eye images, aiding in non-invasive anemia detection. The model leverages a fine-tuned U-Net architecture for accurate semantic segmentation, trained on eye images captured under uncontrolled conditions. Ground truth was generated using manually annotated Pascal masks, and the dataset was augmented to enhance model performance. The proposed model achieved Intersection over Union (IoU) scores of 96% during training and 85.7% during validation, demonstrating its efficacy in conjunctiva segmentation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Anemia detection, conjunctiva segmentation, UNet, logistic regression, medical image analysis, deep learning
+\end{IEEEkeywords}
+
+\section{\textbf{Introduction}}
+
+\subsection{\textbf{Overview of Anemia}}
+Anemia is a highly prevalent blood disorder caused by a reduction in red blood cell count, hemoglobin levels, or a diminished oxygen-carrying capacity in the blood. Severe anemia can lead to organ damage and, in extreme cases, death. It also contributes to increased morbidity in preschool children and pregnant women, with iron deficiency anemia being a leading cause of the global disease burden.
+
+\subsection{\textbf{Causes and Symptoms}}
+Nutritional deficiencies, including iron, folate, and vitamin B12, account for a significant proportion of anemia cases in adults, with gastrointestinal bleeding being a primary cause of iron deficiency anemia, which represents roughly 50\% of nutrient-deficiency-related anemia cases. Anemia is often a subtle, slowly progressing disease, and symptoms may not become apparent until the condition is severe, as the body compensates for oxygen deprivation. Common symptoms include fatigue, dizziness, headaches, pallor, chest pain, weakness, irregular heartbeat, shortness of breath, and cold extremities. Early detection or prevention of anemia is critical to avoiding complications and ensuring a healthy life.
+
+\subsection{\textbf{Current Diagnostic Practices}}
+In clinical practice, initial diagnoses are often made using anamnesis and physical examinations. Healthcare professionals assess anatomical sites such as the conjunctiva, tongue, palms, and nails for signs of anemia. However, as highlighted by Da Silva et al., differences in ambient lighting conditions and the subjective interpretation of medical practitioners can affect the accuracy of such diagnoses.
+
+\subsection{\textbf{Limitations of Traditional Testing}}
+The gold standard for anemia diagnosis is blood cell counting, a typically invasive or minimally invasive procedure. This test, however, is often unsuitable for infants, the elderly, and pregnant women. Additionally, frequent testing can be both uncomfortable and costly. Therefore, techniques described in this paper are particularly beneficial for patients requiring frequent blood tests or those who have difficulty accessing laboratory facilities.
+
+\subsection{\textbf{Technological Advances in Diagnosis}}
+Consequently, many researchers have focused on pallor in exposed tissues, such as the conjunctiva, as an indicator of anemia. Pallor, a lack of color in the skin and mucous membranes due to low circulating hemoglobin, is most easily observed in areas where blood vessels are near the surface, such as the palms, nail beds, and conjunctivae. 
+
+\subsection{\textbf{The Role of Deep Learning}}
+The rise of technology-assisted diagnosis in recent years has led to improved reliability and unbiased results compared to traditional methods. Advances in speech and image analysis, as well as computer vision powered by deep learning, have facilitated the rapid extraction of critical information from digital images or videos, leading to the development of innovative medical applications and diagnostic tools.
+
+\subsection{\textbf{Image Segmentation Techniques}}
+Deep learning models can efficiently perform various tasks such as classification, classification with localization, semantic segmentation, instance segmentation, and object detection. Image segmentation, the process of isolating important information from digital images, is now widely applied across domains—from microscopy to satellite imagery. Traditional segmentation techniques include thresholding, clustering, edge detection, region growing, and watershed transformation.
+
+\subsection{\textbf{Significance of Conjunctiva in Anemia Detection}}
+Previous studies have demonstrated that pale conjunctiva is a reliable indicator of anemia. As such, the conjunctiva is considered a key region of interest (ROI) for anemia detection. Typically, eye images are manually cropped to extract color features from the conjunctiva, but automatic segmentation techniques have yet to fully address the challenges in this application.
+
+\subsection{\textbf{Objective of the Study}}
+In this paper, we apply transfer learning to a U-Net architecture for semantic image segmentation, labeling each pixel of the image with a predefined class. Section 2 describes the materials and methods used to develop the proposed U-Net-based segmentation model. Section 3 elaborates on the structure and organization of the U-Net architecture's layer modules. Section 4 discusses the model's performance during training and validation and presents segmentation results. Finally, Section 5 concludes the work.
+
+\section{\textbf{U-Net Based Conjunctiva Segmentation Model (UNBCSM)}}
+
+\subsection{\textbf{Introduction to U-Net for Conjunctiva Segmentation}}
+Previous studies on conjunctiva segmentation have utilized hundreds of samples for both experimentation and validation [45–50], but many of the conjunctiva images are not publicly available, unlike retinal fundus images. The image acquisition system in this work consists of a macro-lens attached to a smartphone, with the lens being an Aukey PL-M1 25 mm 10× macro lens. This setup includes a specially designed, 3D-printed, lighted spacer, allowing for the capture of high-resolution images that are robust to ambient lighting variations while adhering to diagnostic physical examination protocols. 
+
+\subsection{\textbf{Dataset and Challenges}}
+A dataset of 135 high-resolution images, each showing a clearly visible lower eyelid, was used for training and validation. Conjunctiva segmentation presents several challenges due to the presence of fluids, nerves, folds, light reflections, and shadows in the eye region, making deep learning methods particularly suitable for this task. Therefore, a U-Net architecture, which has demonstrated rapid and superior performance in biomedical image segmentation, was selected for this application due to its efficiency with relatively modest datasets. Figure 1 outlines the development workflow for the proposed U-Net Based Conjunctiva Segmentation Model (UNBCSM), which will be elaborated in Section 3.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g001(2).png}}
+\caption{Flow graph of training the segmentation model.}
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{Segmentation Mask Creation}}
+The UNBCSM utilizes an RGB image in JPEG format as input and a manually segmented mask in NumPy array format as ground truth for training. Manual segmentation was performed for each image, focusing on the palpebral and forniceal conjunctiva regions, and these labels were fed to the supervised deep learning model using Pascal masking techniques. An interactive tool built with the CV2 library facilitated the mask selection, where the eyelid region was manually marked using mouse input. The labeled strokes were stored as binary NumPy arrays, referred to as 'masks'. 
+
+\subsection{\textbf{Mask Processing Techniques}}
+These segmentation masks, initially RGB triplets, were converted to PASCAL masks by grayscale conversion followed by thresholding. The final mask was stored as a binary matrix, where zeros represented the background and ones denoted the conjunctiva or the relevant region of interest (ROI). Conjunctival areas in both corners of the eye were excluded from the mask if impacted by light reflections or shadows, as these regions are often influenced by fluids and color variations. In some cases, the bulbar conjunctiva's lower portion resembled the palpebral conjunctiva in color, leading to its exclusion. Bright and dark spots were similarly omitted during the manual segmentation, allowing the model to focus on essential features. Manual segmentation was performed on all 135 images, with masks overlaid on the corresponding augmented images for verification.
+
+\subsection{\textbf{Image Augmentation and Pre-Processing}}
+To augment the dataset and improve training, several augmentation techniques were applied to the images. The augmentation process utilized the CV2 and NumPy libraries to generate variations of the original images using both rotational and non-rotational methods, including:
+\begin{itemize}
+    \item Angular rotation (between -45\degree to 45\degree) in 5\degree increments,
+    \item Horizontal flipping,
+    \item Gaussian blur,
+    \item Noise addition.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g002(1).png}}
+\caption{Augmentation model for the U-Net based conjunctiva segmentation model (UNBCSM)}
+\label{fig}
+\end{figure}
+
+These augmentations were applied randomly to both the input images and their corresponding masks in the training set (Figure 2). 
+
+\subsection{\textbf{Image Resolution and Normalization}}
+Image augmentation was exclusive to the training data. Additionally, the image resolution was reduced to 512 × 384 pixels to improve training efficiency and reduce memory usage. The segmentation masks were resized accordingly to ensure compatibility with the resized images. Before feeding the images into the model, input data were normalized. 
+
+\subsection{\textbf{Limitations of Augmentation Techniques}}
+Other augmentation techniques, such as vertical flipping, contrast enhancement, and warp shifting, were also used. However, due to the specific nature of the image capture setup, transformations like vertical flipping and large-angle rotations showed minimal improvements in the results. Despite this, these techniques can enhance segmentation performance in cases where the images are captured without modifications to the smartphone setup.
+
+\section{\textbf{U-Net Architecture and Fine-Tuning}}
+
+\subsection{\textbf{Overview of U-Net Architecture}}
+The traditional U-Net architecture employs a dual-path structure for capturing and localizing image context. It consists of a contracting path for capturing context and a symmetric expanding path for precise localization [35]. However, the model in this study introduces several modifications to the traditional U-Net design.
+
+\subsection{\textbf{Modifications to the Traditional U-Net}}
+Several key modifications have been implemented in this study:
+\begin{itemize}
+    \item \textbf{Max-Pooling Layers}: Typically, max-pooling layers are present at each stage, but in this model, max-pooling is applied only in the first stage of the first layer group. Convolutional layers with a stride of two replace the max-pooling layers in later stages.
+    \item \textbf{Activation and Normalization Layers}: This model incorporates additional activation and normalization layers compared to the traditional U-Net.
+    \item \textbf{Exclusion of Dropout Layers}: Dropout layers have been excluded, making this model more specific to eye segmentation applications.
+\end{itemize}
+
+\subsection{\textbf{Basic U-Net Structure}}
+The basic U-Net architecture consists of a contracting path for down-sampling on the left and an expanding path responsible for transposed convolution on the right. The layers in this architecture are illustrated in Figure 3.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g003.png}}
+\caption{ Layer details of the layer modules of UNBCSM}
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{UNBCSM Architecture Design}}
+The UNBCSM architecture, shown in Figure 4, is divided into six Layer Modules (LM), with some individual layers serving as couplings between two Layer Modules. 
+\begin{itemize}
+    \item \textbf{Layer Module 1}: Includes normalization, padding, convolution, activation, and max-pooling layers, the latter being the only one to minimize location sensitivity while maintaining context. Since this model focuses on detecting a single class (eyelid/lower palpebral conjunctiva), one max-pooling layer is sufficient.
+    \item \textbf{Layer Module 2}: Divided into two subtypes: 
+    \begin{itemize}
+        \item \textbf{Module 2a (Identity Block)}: Uses a Conv2D layer with stride 1.
+        \item \textbf{Module 2b}: Uses a Conv2D layer with stride 2 for dimensionality reduction. 
+    \end{itemize}
+    ResNet-34 is employed as the backbone due to its efficiency in performance.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g004.png}}
+\caption{UNBCSM architecture.}
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{Model Progression Through Layer Modules}}
+As the model progresses through the contracting path on the left, the down-sampling and convolutional layers handle segmentation. The learned information is stored in the model weights and is mapped back to the original size as the model ascends through the expanding path on the right. Layer Modules 4, 5, and 6 are relatively simpler than their left-side counterparts, consisting of up-sampling, normalization, and activation layers. The output layer includes a final convolutional layer followed by a sigmoid activation function for binary classification tasks.
+
+\subsection{\textbf{Training Configuration}}
+The model was trained using Google Colab's runtime with a GPU. UNBCSM was trained on 581 images, including 108 original images and 473 augmented images. To avoid overfitting, the split validation method was used instead of N-fold cross-validation, ensuring that 20\% of the original images (27 in total) were reserved for validation. The distribution of images across training and validation is depicted in Figure 5.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g005.png}}
+\caption{Training and validation data}
+\label{fig}
+\end{figure}
+
+\section{\textbf{Results and Discussion}}
+
+\subsection{\textbf{Overall Performance Metrics}}
+The performance of the U-Net Based Conjunctiva Segmentation Model (UNBCSM) for this task is illustrated using graphs in Figure 6. The learning curve demonstrates that the model is neither underfitting nor overfitting. For this biomedical application, the Intersection over Union (IoU) score was selected over pixel accuracy and the Dice Index (F1 score). While both the IoU and F1 metrics similarly identify pixel misclassifications, the IoU score penalizes these errors more rigorously, making it better suited for dealing with class imbalance compared to pixel accuracy.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g006.png}}
+\caption{Training and validation results.}
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{IoU Score Analysis}}
+The model achieved an average IoU score of 85.7\%, with a standard deviation of ±5.3\% on unseen samples, as presented in Table 1. All samples, except for one, yielded an IoU score above 0.77. A model with an average IoU exceeding 50\% is generally regarded as a good segmentation model. In this case, the model reached a mean IoU score of 96\% for training and 85.7\% for validation, making it highly suitable for anemia detection applications, outperforming manual cropping methods.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Parameters} & \textbf{IoU Score} \\ \hline
+        Mean value & 0.857 \\ \hline
+        Standard Deviation & (+/-) 0.053 \\ \hline
+        Maximum value & 0.928 \\ \hline
+        Minimum value & 0.661 \\ \hline
+    \end{tabular}
+    \caption{Table showing IoU Score statistics}
+    \label{tab:iou_score}
+\end{table}
+
+
+\subsection{\textbf{Segmentation Results Visualization}}
+To assess the model's performance, the segmentation results for each sample were compared to the manually selected region of interest (ROI) using the IoU score. This process is illustrated in Figure 7 using a sample from the test set. 
+\begin{itemize}
+    \item Figure 7a: Original eye image.
+    \item Figure 7b: Overlay of the original image and manually selected ROI, which serves as the label or ground truth.
+    \item Figure 7c: Cropped region of the manually segmented area and its corresponding mask.
+    \item Figure 7d: Trained model’s segmentation output.
+    \item Figure 7e: Overlay of Figure 7c and Figure 7d, offering a clearer understanding of the segmentation results (IoU score = 0.8864).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g007.png}}
+\caption{Segmentation results. (a) Original eye image, (b) overlay of original image and ground truth, (c) manually segmented region of interest (ROI) and its mask, (d) segmentation of ROI by the model and its mask, (e) overlay of ‘d’ and ‘e’ (IoU score = 0.8864).}
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{Validation Sample Performance}}
+In Figure 8, the segmentation performance for validation samples is shown. 
+\begin{itemize}
+    \item \textbf{Row I}: Manually segmented conjunctiva region for images A, B, C, and D.
+    \item \textbf{Row II}: Corresponding segmented regions generated by the model.
+    \item \textbf{Row III}: Overlay of the ground truth and the model's segmentation results. 
+\end{itemize}
+Columns A and B display strong model performance, while columns C and D show average and suboptimal results. Table A1 provides a detailed breakdown of the metrics for each test set sample.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{electronics-09-01309-g008.png}}
+\caption{Four samples (A–D) of the segmentation results. Row I: The manually segmented conjunctive region, Row II: Segmented conjunctive region by the model, and Row III: Overlay of both the masks and IoU. }
+\label{fig}
+\end{figure}
+
+\subsection{\textbf{IoU Score Calculation}}
+The IoU score measures the ratio of the overlap area between the predicted segmentation and the ground truth to the total area of both. Mathematically, IoU is defined as shown in Equation (1), where \( G \) represents the number of pixels in the ground truth segmentation mask and \( P \) represents the number of pixels in the predicted segmentation mask. The IoU score, which ranges from 0 to 1, provides insight into the segmentation quality.
+
+\begin{equation}
+\text{IoU Score} = \frac{G \cap P}{G \cup P}
+\end{equation}
+
+
+\section{\textbf{Conclusion}}
+
+Non-invasive anemia detection applications typically require manual segmentation or cropping of the region of interest as an initial step. Given the correlation between pixel characteristics of the conjunctiva and hemoglobin levels, the segmentation capabilities of the proposed model significantly contribute to the accurate diagnosis of anemia. The model can be serialized and compressed for deployment in mobile applications, enabling offline functionality—a crucial advantage for low-resource medical facilities in impoverished areas. Current conjunctiva-based hemoglobin prediction algorithms are often trained using manually cropped conjunctiva regions. By introducing an automatic segmentation step, this model can serve as a valuable pre-processing tool for existing hemoglobin prediction algorithms. Poor region of interest (ROI) selection can lead to inaccurate predictions, which could impact both automated diagnostic tools and medical examinations.
+
+This paper explored automatic segmentation as a viable solution to conjunctiva segmentation challenges, highlighting its potential to complement other diagnostic methods. The proposed U-Net Based Conjunctiva Segmentation Model (UNBCSM) demonstrated a mean IoU score of 84.5\% on the validation set, proving its effectiveness for conjunctiva image segmentation. Since this model retains crucial details correlated with hemoglobin levels—such as nerve patterns and nerve color in the conjunctiva region—it can be utilized as a pre-processing step to create more accurate models. This research opens the door for leveraging a broader spectrum of image features in hemoglobin detection, beyond basic color averages in standard color spaces like RGB and YCrCb
+
+
+\section*{Acknowledgment}
+We would like to thank [Funding Agency Name] for supporting this research.
+
+\begin{thebibliography}{00}
+\bibitem{b1} O. Ronneberger, P. Fischer, and T. Brox, ``U-Net: Convolutional Networks for Biomedical Image Segmentation,'' in MICCAI, 2015.
+\bibitem{b2} C. M. Bishop, ``Pattern Recognition and Machine Learning,'' Springer, 2006.
+\end{thebibliography}
+
+\end{document}
